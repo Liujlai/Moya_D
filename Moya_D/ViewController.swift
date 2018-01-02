@@ -7,19 +7,77 @@
 //
 
 import UIKit
+import SwiftyJSON
+import Cupcake
 
 class ViewController: UIViewController {
-
+    
+    var lab: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        setupLabUI()
+        loadDataOperation()
+//        loadDataJD()
+//        loadData()
+//        loadlistData()
     }
-
+    
+    func setupLabUI(){
+        lab = Label.lines(0).bg("#eee666").border(1, "#aaaddd").addTo(view).makeCons({ (make) in
+            make.width.height.equal(self.view)
+        })
+    }
+    func loadDataOperation(){
+        Network.request(.operation, success: { (json) in
+            self.lab.str(json)
+        }, error: { (statusCode) in
+            //服务器报错等问题
+            print("请求错误！错误码：\(statusCode)")
+        }) { (error) in
+            //没有网络等问题
+            print("请求失败！错误信息：\(error.errorDescription ?? "")")
+        }
+    }
+    
+    func loadDataJD(){
+        ApiProvider.request(.JD) { result  in
+            if case let .success(response) = result{
+                let data = try? response.mapJSON()
+                let json = JSON(data!)
+                DispatchQueue.main.async {
+                    self.lab.str(json)
+                }              
+            }
+        }
+    }
+    func loadData(){
+        ApiProvider.request(.scores) { result in
+            if case let .success(response) = result{
+                let data = try? response.mapJSON()
+                let json = JSON(data!)
+                DispatchQueue.main.async {
+                    self.lab.str(json)
+                }
+            }
+        }
+    }
+    func loadlistData(){
+        ApiProvider.request(.list) { result in
+            if case let .success(response) = result{
+                let data = try? response.mapJSON()
+                let json = JSON(data!)
+                DispatchQueue.main.async {
+                    self.lab.str(json)
+                }
+            }
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
+    
+    
 }
 
