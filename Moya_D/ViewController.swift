@@ -23,7 +23,7 @@ class ViewController: UIViewController {
     }
     
     func setupLabUI(){
-        lab = Label.lines(0).bg("#eee666").border(1, "#aaaddd").addTo(view).makeCons({ (make) in
+        lab = Label.lines(0).bg("#96CDCD").border(2, "#EE6AA7").color("#FFFFFF").addTo(view).makeCons({ (make) in
             make.width.height.equal(self.view)
         })
     }
